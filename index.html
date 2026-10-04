@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>荒野大镖客2：无法之徒的穷途末路与崇高救赎 | Hyperframe 史诗剧情解析</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0a08;
+      --bg-card: rgba(24, 18, 14, 0.9);
+      --border-color: rgba(217, 119, 6, 0.35);
+      --accent: #d97706;
+      --accent-sec: #dc2626;
+      --accent-alert: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Noto Serif SC', -apple-system, BlinkMacSystemFont, "PingFang SC", serif;
+      line-height: 1.6;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+    .series-nav-bar {
+      background: rgba(10, 14, 22, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .series-link {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+    }
+    .series-link:hover, .series-link.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+    .hero-banner {
+      padding: 50px 20px 24px;
+      text-align: center;
+    }
+    .badge-top {
+      display: inline-block;
+      padding: 5px 18px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 13px;
+      letter-spacing: 2.5px;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+    .main-title {
+      font-size: clamp(30px, 4.5vw, 52px);
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 95%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: clamp(15px, 1.8vw, 19px);
+      color: var(--text-muted);
+      max-width: 840px;
+      margin: 0 auto 28px;
+    }
+    .tag-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .spec-tag {
+      padding: 5px 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    .spec-tag b { color: var(--accent); }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    .video-box {
+      background: #000;
+      border: 1.5px solid var(--border-color);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85);
+      margin-bottom: 30px;
+    }
+    .video-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+    }
+    .video-wrapper video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .player-quickbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(15, 20, 30, 0.95);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .current-chapter-display {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+    }
+    .indicator-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.8); opacity: 0.5; }
+    }
+    .current-chapter-name { color: var(--accent); font-weight: 700; }
+    .playback-tools { display: flex; gap: 8px; }
+    .speed-btn {
+      padding: 4px 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .speed-btn.active {
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      border-color: var(--accent);
+    }
+
+    /* Interactive Timeline Nav */
+    .timeline-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 45px;
+    }
+    .timeline-nav-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .timeline-nav-card:hover, .timeline-nav-card.active {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .tn-index {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+    .tn-info { flex: 1; overflow: hidden; }
+    .tn-title {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #f1f5f9;
+    }
+    .tn-time { font-size: 11px; color: #64748b; }
+
+    /* Section Headings */
+    .section-title {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 40px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: var(--accent);
+      border-radius: 2px;
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Causal Cards List */
+    .causal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 45px;
+    }
+    .causal-scene-card {
+      background: var(--bg-card);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.25s;
+    }
+    .causal-scene-card:hover {
+      border-color: var(--accent);
+    }
+    .csc-header { margin-bottom: 18px; }
+    .csc-meta { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+    .csc-step {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      color: var(--accent);
+    }
+    .csc-time-tag { font-size: 12px; color: #64748b; }
+    .csc-title { font-size: 22px; font-weight: 900; color: #f8fafc; margin-bottom: 8px; }
+    .csc-narration { font-size: 15px; color: var(--text-muted); font-style: italic; line-height: 1.5; }
+    .csc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .causal-box {
+      background: rgba(8, 12, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .c-pill {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .c-title { font-size: 17px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
+    .c-bullets { list-style: none; padding-left: 0; }
+    .c-bullets li {
+      font-size: 14px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+      position: relative;
+      padding-left: 14px;
+    }
+    .c-bullets li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* Character Dossier */
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 60px;
+    }
+    .char-card {
+      background: var(--bg-card);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.25s;
+    }
+    .char-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .char-img-wrap {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+    }
+    .char-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .char-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(0,0,0,0.8);
+      border: 1px solid;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .char-body { padding: 18px 20px; }
+    .char-name { font-size: 20px; font-weight: 900; color: #ffffff; margin-bottom: 6px; }
+    .char-desc { font-size: 14px; color: var(--text-muted); line-height: 1.45; }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #64748b;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Global Series Bar -->
+  <div class="series-nav-bar">
+    <a href="https://holynova.github.io/elden-ring-lore/" class="series-link">艾尔登法环</a><a href="https://holynova.github.io/cyberpunk-2077-lore/" class="series-link">赛博朋克2077</a><a href="https://holynova.github.io/rdr2-lore/" class="series-link active">荒野大镖客2</a><a href="https://holynova.github.io/gta5-lore/" class="series-link">GTA5</a><a href="https://holynova.github.io/witcher-3-lore/" class="series-link">巫师三</a><a href="https://holynova.github.io/dark-souls-3-lore/" class="series-link">黑暗之魂3</a>
+  </div>
+
+  <!-- Hero Header -->
+  <header class="hero-banner">
+    <div class="badge-top">RED DEAD REDEMPTION 2 / 西部史诗终曲</div>
+    <h1 class="main-title">荒野大镖客2：无法之徒的穷途末路与崇高救赎</h1>
+    <p class="subtitle">从黑水镇溃败、达奇画饼狂妄，到亚瑟·摩根雪山破晓中的永恒绝唱</p>
+    <div class="tag-container">
+      <div class="spec-tag">视频规格：<b>1080P 60FPS 超清</b></div>
+      <div class="spec-tag">音频体验：<b>双声道定制氛围 BGM</b></div>
+      <div class="spec-tag">叙事风格：<b>慷慨激昂 / 说人话因果闭环</b></div>
+      <div class="spec-tag">视觉呈现：<b>极简大字 / 严密时间线 / 绝对无进度条</b></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Cinema Video Box -->
+    <div class="video-box">
+      <div class="video-wrapper">
+        <video id="mainVideo" controls poster="assets/images/hero_arthur.jpg">
+          <source src="rdr2_lore.mp4" type="video/mp4">
+          您的浏览器暂不支持 HTML5 视频播放。
+        </video>
+      </div>
+      <div class="player-quickbar">
+        <div class="current-chapter-display">
+          <div class="indicator-dot"></div>
+          <span>当前解析：<b class="current-chapter-name" id="curChapterName">时代前因 · 文明压境与黑水镇溃败</b></span>
+        </div>
+        <div class="playback-tools">
+          <button class="speed-btn active" onclick="setSpeed(1.0, this)">1.0x</button>
+          <button class="speed-btn" onclick="setSpeed(1.25, this)">1.25x</button>
+          <button class="speed-btn" onclick="setSpeed(1.5, this)">1.5x</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline Nav Bar -->
+    <div class="timeline-nav-grid">
+      
+          <div class="timeline-nav-card" onclick="jumpToChapter(0.0, 1)">
+            <div class="tn-index">01</div>
+            <div class="tn-info">
+              <div class="tn-title">时代前因 · 文明压境与黑水镇溃败</div>
+              <div class="tn-time">00:00</div>
+            </div>
+          </div>
+        
+          <div class="timeline-nav-card" onclick="jumpToChapter(38.3, 2)">
+            <div class="tn-index">02</div>
+            <div class="tn-info">
+              <div class="tn-title">幻梦破灭 · 达奇画饼与偏执失控</div>
+              <div class="tn-time">00:38</div>
+            </div>
+          </div>
+        
+          <div class="timeline-nav-card" onclick="jumpToChapter(75.0, 3)">
+            <div class="tn-index">03</div>
+            <div class="tn-info">
+              <div class="tn-title">因果绝症 · 催债恶果与灵魂觉醒</div>
+              <div class="tn-time">01:15</div>
+            </div>
+          </div>
+        
+          <div class="timeline-nav-card" onclick="jumpToChapter(111.7, 4)">
+            <div class="tn-index">04</div>
+            <div class="tn-info">
+              <div class="tn-title">帮派分崩 · 迈卡背叛与舍身护弟</div>
+              <div class="tn-time">01:51</div>
+            </div>
+          </div>
+        
+          <div class="timeline-nav-card" onclick="jumpToChapter(149.6, 5)">
+            <div class="tn-index">05</div>
+            <div class="tn-info">
+              <div class="tn-title">终极救赎 · 孤峰绝战与落日鹿影</div>
+              <div class="tn-time">02:29</div>
+            </div>
+          </div>
+        
+          <div class="timeline-nav-card" onclick="jumpToChapter(187.9, 6)">
+            <div class="tn-index">06</div>
+            <div class="tn-info">
+              <div class="tn-title">尾声因果 · 比彻之愿与复仇代价</div>
+              <div class="tn-time">03:07</div>
+            </div>
+          </div>
+        
+    </div>
+
+    <!-- Section 1: Causal Logic Full Map -->
+    <h2 class="section-title">六幕剧情前因后果全景因果链</h2>
+    <div class="causal-list">
+      
+          <div class="causal-scene-card" id="scene-card-1">
+            <div class="csc-header">
+              <div class="csc-meta">
+                <span class="csc-step">STAGE 01</span>
+                <span class="csc-time-tag">00:00</span>
+              </div>
+              <h3 class="csc-title">时代前因 · 文明压境与黑水镇溃败</h3>
+              <p class="csc-narration">"大镖客2的剧情之所以封神，是因为它用血与泪讲透了一个时代覆灭的必然规律！故事的前因发生在1899年：工业机器轰鸣，现代法律与平克顿侦探如同铁网般罩向美洲大陆，自由驰骋的西部牛仔时代彻底走到尽头！范德林德帮作为最后的法外狂徒，在黑水镇铤而走险抢劫渡轮惨遭埋伏，死伤惨重，只能在暴风雪掩护下仓皇逃进犁刀村雪山！从那一刻起，毁灭的倒计时就已经敲响！"</p>
+            </div>
+            <div class="csc-grid">
+              
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(239, 68, 68, 0.16); color: #ef4444;">【时代剧变】</span>
+                <h4 class="c-title">工业文明与法律铁幕降临</h4>
+                <ul class="c-bullets">
+                  <li>平克顿私人侦探受雇资本家，地毯式追剿法外之徒</li><li>荒蛮西部的自由拓荒时代已死，牛仔无处容身</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(217, 119, 6, 0.16); color: #d97706;">【黑水惨败】</span>
+                <h4 class="c-title">黑水镇渡轮大劫案折戟</h4>
+                <ul class="c-bullets">
+                  <li>听信迈卡激进提议惨遭埋伏，多名兄弟当场横死</li><li>大批钞票被扣留无法取回，帮派陷入绝望财务危机</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(220, 38, 38, 0.16); color: #dc2626;">【雪山流亡】</span>
+                <h4 class="c-title">仓皇逃入暴风雪绝境</h4>
+                <ul class="c-bullets">
+                  <li>饥寒交迫躲进犁刀村废弃矿场，队伍人心惶惶</li><li>老二亚瑟扛起打猎找粮重任，维系帮派残存生机</li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        
+          <div class="causal-scene-card" id="scene-card-2">
+            <div class="csc-header">
+              <div class="csc-meta">
+                <span class="csc-step">STAGE 02</span>
+                <span class="csc-time-tag">00:38</span>
+              </div>
+              <h3 class="csc-title">幻梦破灭 · 达奇画饼与偏执失控</h3>
+              <p class="csc-narration">"帮派为什么会一步步走向毁灭？核心就在于领袖达奇的病态执念！达奇每天都在营地激情演讲画大饼：“兄弟们，再干一票大的！攒够钱我们就买船去大溪地种芒果！”然而现实是：他越干越砸！不仅引入了唯利是图的暴徒迈卡，还手染无辜鲜血。从瓦伦泰恩枪战一路逃窜，再到圣丹尼斯银行劫案何西阿惨死，达奇的理性彻底崩盘，开始怀疑每一个真心待他的老兄弟！"</p>
+            </div>
+            <div class="csc-grid">
+              
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(217, 119, 6, 0.16); color: #d97706;">【画饼大师】</span>
+                <h4 class="c-title">大溪地种芒果的虚妄幻梦</h4>
+                <ul class="c-bullets">
+                  <li>口口声声为了自由与家庭，实则享受被众人崇拜仰望</li><li>“再干最后一票”、“多一点信任”，沦为致命催命符</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(239, 68, 68, 0.16); color: #ef4444;">【恶魔低语】</span>
+                <h4 class="c-title">迈卡趁虚而入蛊惑人心</h4>
+                <ul class="c-bullets">
+                  <li>迈卡谄媚逢迎博取信任，挑拨达奇与老部下关系</li><li>何西阿与亚瑟的理性劝阻被达奇斥责为“背叛与软弱”</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(220, 38, 38, 0.16); color: #dc2626;">【血染圣丹尼斯】</span>
+                <h4 class="c-title">核心智囊何西阿惨遭枪决</h4>
+                <ul class="c-bullets">
+                  <li>银行抢劫再遭伏击，精神支柱何西阿倒在乱枪之下</li><li>逃亡热带瓜玛岛九死一生，达奇彻底走向疯狂嗜血</li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        
+          <div class="causal-scene-card" id="scene-card-3">
+            <div class="csc-header">
+              <div class="csc-meta">
+                <span class="csc-step">STAGE 03</span>
+                <span class="csc-time-tag">01:15</span>
+              </div>
+              <h3 class="csc-title">因果绝症 · 催债恶果与灵魂觉醒</h3>
+              <p class="csc-narration">"整个游戏最震撼人心的转折，是一场残酷的因果报应！亚瑟早年替施特劳斯向患病的农夫唐斯先生暴力催债，被吐了一脸带血的唾沫；到了圣丹尼斯街头，亚瑟剧烈咳嗽昏倒在马路上，医生冷酷地宣布了死刑：重度肺结核！在没有抗生素的1899年，这等于当场枪决！但绝症反倒砸碎了亚瑟思想上的枷锁：既然自己必死无疑，那就用剩下的最后一口气，救出约翰一家，做真正对的事情！"</p>
+            </div>
+            <div class="csc-grid">
+              
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(239, 68, 68, 0.16); color: #ef4444;">【因果业报】</span>
+                <h4 class="c-title">向弱者施暴结下的致命恶果</h4>
+                <ul class="c-bullets">
+                  <li>奉命对唐斯农夫拳脚相加逼债，沾染致命结核杆菌</li><li>过去几十年的土匪暴行，以最残酷的方式回击肉体</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(217, 119, 6, 0.16); color: #d97706;">【死亡判决】</span>
+                <h4 class="c-title">圣丹尼斯诊所的绝望诊断</h4>
+                <ul class="c-bullets">
+                  <li>不可逆的进行性肺结核，咳血消瘦体力急剧衰竭</li><li>死亡倒计时让亚瑟彻底看清了达奇的伪善与冷酷</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(220, 38, 38, 0.16); color: #dc2626;">【灵魂破茧】</span>
+                <h4 class="c-title">将最后的生命献给救赎</h4>
+                <ul class="c-bullets">
+                  <li>驱逐放高利贷的施特劳斯，暗中接济孤儿寡母</li><li>立誓豁出性命，也要保全约翰·马斯顿一家的未来！</li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        
+          <div class="causal-scene-card" id="scene-card-4">
+            <div class="csc-header">
+              <div class="csc-meta">
+                <span class="csc-step">STAGE 04</span>
+                <span class="csc-time-tag">01:51</span>
+              </div>
+              <h3 class="csc-title">帮派分崩 · 迈卡背叛与舍身护弟</h3>
+              <p class="csc-narration">"真相终于在血腥中彻底揭晓！米尔顿探员亲口吐露：从瓜玛岛回来后，迈卡就早已投降平克顿当了内鬼！当亚瑟回到营地当面质问时，疯狂的达奇却选择掏枪指向亚瑟！平克顿大军随后包围营地，子弹如雨点般倾泻！在千钧一发之际，亚瑟毅然决然拉着约翰往雪山最高处狂奔，面对步步紧逼的追兵，亚瑟推开约翰：“走！约翰！去过属于你自己的新生活！别回头！”"</p>
+            </div>
+            <div class="csc-grid">
+              
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(239, 68, 68, 0.16); color: #ef4444;">【内鬼现形】</span>
+                <h4 class="c-title">平克顿走狗出卖全部情报</h4>
+                <ul class="c-bullets">
+                  <li>米尔顿探员吐露实情：迈卡一直在通风报信泄露行踪</li><li>莫莉的牺牲是场悲剧冤案，真凶一直在达奇枕边低语</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(217, 119, 6, 0.16); color: #d97706;">【拔枪相向】</span>
+                <h4 class="c-title">海狸岩营地的终极决裂</h4>
+                <ul class="c-bullets">
+                  <li>亚瑟带病揭穿真相，达奇却被迈卡蛊惑不辨是非</li><li>兄弟手足情义彻底沦丧，平克顿神枪手大举压境围剿</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(220, 38, 38, 0.16); color: #dc2626;">【舍命掩护】</span>
+                <h4 class="c-title">把生的希望留给约翰一家</h4>
+                <ul class="c-bullets">
+                  <li>把马匹、枪支与自己的牛仔帽郑重交到约翰手中</li><li>孤身一人回头拦截追兵，为约翰争取逃出生天的生机</li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        
+          <div class="causal-scene-card" id="scene-card-5">
+            <div class="csc-header">
+              <div class="csc-meta">
+                <span class="csc-step">STAGE 05</span>
+                <span class="csc-time-tag">02:29</span>
+              </div>
+              <h3 class="csc-title">终极救赎 · 孤峰绝战与落日鹿影</h3>
+              <p class="csc-narration">"山顶上的终极决战，是整个游戏史上最悲壮的一幕！早已油尽灯枯的亚瑟，用尽全身最后一点力气与迈卡滚在泥泞中肉搏！赶到的达奇看着倒在血泊中大口咳血的亚瑟，终于被亚瑟眼中的坚定所震慑，默默收枪转身离去。迈卡吐着唾沫狼狈逃窜。身负重伤的亚瑟拼尽全力爬上岩石，面向东方缓缓升起的温暖朝阳，伴随着鹿影的安详浮现，平静地闭上了双眼！他赢了，他拯救了约翰！"</p>
+            </div>
+            <div class="csc-grid">
+              
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(217, 119, 6, 0.16); color: #d97706;">【油尽灯枯】</span>
+                <h4 class="c-title">雪峰之巅的殊死肉搏</h4>
+                <ul class="c-bullets">
+                  <li>肺部撕裂剧痛，带病耗尽生命最后一丝气力纠缠迈卡</li><li>用血肉之躯死死拖住仇敌，为兄弟筑起无法逾越的屏障</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(220, 38, 38, 0.16); color: #dc2626;">【达奇退缩】</span>
+                <h4 class="c-title">伪善领袖最后的羞愧逃避</h4>
+                <ul class="c-bullets">
+                  <li>亚瑟虚弱却清澈的目光刺痛达奇良心，达奇选择抽身</li><li>迈卡失去靠山气急败坏，只得悻悻逃离山顶</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(239, 68, 68, 0.16); color: #ef4444;">【晨曦安详】</span>
+                <h4 class="c-title">向着朝阳迎风长眠</h4>
+                <ul class="c-bullets">
+                  <li>爬上孤峰崖壁，沐浴在金黄色的破晓阳光之下</li><li>象征高尚灵魂的林间雄鹿驻足凝望，传奇安详谢幕</li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        
+          <div class="causal-scene-card" id="scene-card-6">
+            <div class="csc-header">
+              <div class="csc-meta">
+                <span class="csc-step">STAGE 06</span>
+                <span class="csc-time-tag">03:07</span>
+              </div>
+              <h3 class="csc-title">尾声因果 · 比彻之愿与复仇代价</h3>
+              <p class="csc-narration">"亚瑟用生命换来的果实没有被辜负！数年之后，约翰·马斯顿洗心革面，在比彻之愿亲手打下一根根木桩，建起了属于自己的农场，给阿比盖尔和杰克一个温暖的家！然而宿命的因果从未停止：为了给亚瑟报仇，约翰终究登上了雪山，亲手击毙了迈卡！这一枪虽然大快人心，却也引来了平克顿罗斯探员的鹰犬！亚瑟完成了崇高的救赎，而复仇的硝烟，又无情地开启了初代大镖客的宿命轮回！"</p>
+            </div>
+            <div class="csc-grid">
+              
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(217, 119, 6, 0.16); color: #d97706;">【传承新生】</span>
+                <h4 class="c-title">亲手搭建比彻之愿农场</h4>
+                <ul class="c-bullets">
+                  <li>还清银行贷款，放下杀戮枪支，当一名诚实守信的农民</li><li>亚瑟用命换来的第二人生，在汗水中开花结果</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(239, 68, 68, 0.16); color: #ef4444;">【雪山复仇】</span>
+                <h4 class="c-title">怒斩内鬼迈卡终雪前仇</h4>
+                <ul class="c-bullets">
+                  <li>联手莎迪与查尔斯杀入雪山，与达奇共同击毙迈卡</li><li>夺回帮派黑水镇血汗钱，彻底扫除旧时代的肮脏梦魇</li>
+                </ul>
+              </div>
+            
+              <div class="causal-box">
+                <span class="c-pill" style="background: rgba(220, 38, 38, 0.16); color: #dc2626;">【宿命轮回】</span>
+                <h4 class="c-title">罗斯探员顺藤摸瓜逼近</h4>
+                <ul class="c-bullets">
+                  <li>枪响引来法律猎犬，罗斯探员凝视农场埋下杀机</li><li>向死而生的崇高救赎永载史册，史诗传奇永不褪色！</li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        
+    </div>
+
+    <!-- Section 2: Character Dossier -->
+    <h2 class="section-title">关键人物与核心场景档案</h2>
+    <div class="char-grid">
+      
+          <div class="char-card">
+            <div class="char-img-wrap">
+              <img src="assets/images/scene01_arthur.jpg" alt="亚瑟·摩根" class="char-img" />
+              <div class="char-badge" style="border-color: #d97706; color: #d97706;">帮派顶梁柱</div>
+            </div>
+            <div class="char-body">
+              <h4 class="char-name">亚瑟·摩根</h4>
+              <p class="char-desc">范德林德帮最锋利的刀与最疲惫的灵魂，大时代的见证者。</p>
+            </div>
+          </div>
+        
+          <div class="char-card">
+            <div class="char-img-wrap">
+              <img src="assets/images/scene02_dutch.jpg" alt="达奇·范德林德" class="char-img" />
+              <div class="char-badge" style="border-color: #d97706; color: #d97706;">画饼领袖</div>
+            </div>
+            <div class="char-body">
+              <h4 class="char-name">达奇·范德林德</h4>
+              <p class="char-desc">永远喊着“我有一个绝妙计划”，最终在偏执与背叛中坠入深渊。</p>
+            </div>
+          </div>
+        
+          <div class="char-card">
+            <div class="char-img-wrap">
+              <img src="assets/images/scene03_camp.jpg" alt="亚瑟的觉醒" class="char-img" />
+              <div class="char-badge" style="border-color: #d97706; color: #d97706;">因果业报</div>
+            </div>
+            <div class="char-body">
+              <h4 class="char-name">亚瑟的觉醒</h4>
+              <p class="char-desc">绝症肺结核成为压垮肉体的毒药，却成了洗涤灵魂的甘霖。</p>
+            </div>
+          </div>
+        
+          <div class="char-card">
+            <div class="char-img-wrap">
+              <img src="assets/images/scene04_micah.jpg" alt="老鼠 迈卡·贝尔" class="char-img" />
+              <div class="char-badge" style="border-color: #d97706; color: #d97706;">帮派内鬼</div>
+            </div>
+            <div class="char-body">
+              <h4 class="char-name">老鼠 迈卡·贝尔</h4>
+              <p class="char-desc">平克顿侦探的走狗，自私残忍的纯粹恶人，帮派瓦解的元凶。</p>
+            </div>
+          </div>
+        
+          <div class="char-card">
+            <div class="char-img-wrap">
+              <img src="assets/images/scene05_mountain.jpg" alt="破晓中的亚瑟" class="char-img" />
+              <div class="char-badge" style="border-color: #d97706; color: #d97706;">崇高救赎</div>
+            </div>
+            <div class="char-body">
+              <h4 class="char-name">破晓中的亚瑟</h4>
+              <p class="char-desc">高荣誉值下的安详陨落，西部历史上最令人动容的伟岸背影。</p>
+            </div>
+          </div>
+        
+          <div class="char-card">
+            <div class="char-img-wrap">
+              <img src="assets/images/scene06_ranch.jpg" alt="约翰·马斯顿" class="char-img" />
+              <div class="char-badge" style="border-color: #d97706; color: #d97706;">传承与宿命</div>
+            </div>
+            <div class="char-body">
+              <h4 class="char-name">约翰·马斯顿</h4>
+              <p class="char-desc">继承亚瑟意志的幸存者，建起农场却终难逃脱一代的悲剧宿命。</p>
+            </div>
+          </div>
+        
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Hyperframe Video & Visual Knowledge Lab · 基于因果逻辑与高阶视觉合成构建</p>
+  </footer>
+
+  <script>
+    const video = document.getElementById('mainVideo');
+    const timestamps = [0.0, 38.26, 75.03999999999999, 111.66999999999999, 149.57, 187.85999999999999];
+    const sceneTitles = ["\u65f6\u4ee3\u524d\u56e0 \u00b7 \u6587\u660e\u538b\u5883\u4e0e\u9ed1\u6c34\u9547\u6e83\u8d25", "\u5e7b\u68a6\u7834\u706d \u00b7 \u8fbe\u5947\u753b\u997c\u4e0e\u504f\u6267\u5931\u63a7", "\u56e0\u679c\u7edd\u75c7 \u00b7 \u50ac\u503a\u6076\u679c\u4e0e\u7075\u9b42\u89c9\u9192", "\u5e2e\u6d3e\u5206\u5d29 \u00b7 \u8fc8\u5361\u80cc\u53db\u4e0e\u820d\u8eab\u62a4\u5f1f", "\u7ec8\u6781\u6551\u8d4e \u00b7 \u5b64\u5cf0\u7edd\u6218\u4e0e\u843d\u65e5\u9e7f\u5f71", "\u5c3e\u58f0\u56e0\u679c \u00b7 \u6bd4\u5f7b\u4e4b\u613f\u4e0e\u590d\u4ec7\u4ee3\u4ef7"];
+
+    function jumpToChapter(seconds, idx) {
+      video.currentTime = seconds;
+      video.play();
+      updateChapterUI(idx - 1);
+    }
+
+    function setSpeed(speed, btn) {
+      video.playbackRate = speed;
+      document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function updateChapterUI(idx) {
+      document.getElementById('curChapterName').innerText = sceneTitles[idx];
+      document.querySelectorAll('.timeline-nav-card').forEach((c, i) => {
+        if (i === idx) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+    }
+
+    video.addEventListener('timeupdate', () => {
+      const t = video.currentTime;
+      let activeIdx = 0;
+      for (let i = 0; i < timestamps.length; i++) {
+        if (t >= timestamps[i]) activeIdx = i;
+      }
+      updateChapterUI(activeIdx);
+    });
+  </script>
+</body>
+</html>

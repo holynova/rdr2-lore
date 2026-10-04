@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <script src="assets/gsap.min.js"></script>
+  <style>
+    @font-face {
+      font-family: LabChinese;
+      src: url('assets/PingFang.ttc');
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: #0d0a08;
+      color: #f1f5f9;
+      font-family: LabChinese, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+    .bg-wrap {
+      position: absolute;
+      inset: 0;
+      background: url('assets/images/scene03_camp.jpg') center/cover no-repeat;
+      opacity: 0.32;
+      filter: brightness(0.7) contrast(1.2) saturate(1.1);
+    }
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 35%, rgba(6,8,13,0.3) 0%, rgba(5,6,9,0.92) 80%);
+    }
+    .ambient-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Global Timeline Rail */
+    .timeline-rail {
+      position: absolute;
+      left: 70px;
+      right: 70px;
+      top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 15;
+    }
+    .timeline-steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-node {
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #64748b;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .timeline-node.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #d97706;
+      border-color: #d97706;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+    .timeline-arrow {
+      color: #475569;
+      font-size: 13px;
+    }
+    .game-brand {
+      font-size: 16px;
+      color: #94a3b8;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    /* Hero Title Area */
+    .title-area {
+      position: absolute;
+      left: 70px;
+      right: 70px;
+      top: 86px;
+      z-index: 10;
+    }
+    .eyebrow-tag {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      color: #d97706;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .main-title {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.18;
+      margin: 0;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #ffffff 30%, #d97706 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
+    }
+
+    /* Split Content */
+    .content-split {
+      position: absolute;
+      left: 70px;
+      right: 70px;
+      top: 195px;
+      bottom: 110px;
+      display: flex;
+      gap: 32px;
+      z-index: 10;
+    }
+
+    /* Left Column */
+    .logic-column {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .logic-box {
+      background: rgba(24, 18, 14, 0.9);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 18px 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .box-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .box-pill {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+    .box-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: 1px;
+    }
+    .box-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .bullet-item {
+      font-size: 17px;
+      line-height: 1.45;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .bullet-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 9px;
+      flex-shrink: 0;
+    }
+
+    /* Right Column: Character / Scene Card */
+    .art-column {
+      flex: 0.85;
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(217, 119, 6, 0.35);
+      background: #0d111a;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.8);
+    }
+    .art-img-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .art-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .art-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(6,8,13,0.1) 40%, rgba(6,8,13,0.95) 100%);
+    }
+    .art-info-overlay {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 22px;
+      z-index: 5;
+    }
+    .art-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid #d97706;
+      color: #d97706;
+      margin-bottom: 6px;
+    }
+    .art-name {
+      font-size: 30px;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0 0 4px 0;
+      letter-spacing: 1.5px;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.8);
+    }
+    .art-desc {
+      font-size: 16px;
+      color: #cbd5e1;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Bottom Floating Subtitle (No Progress Bar!) */
+    .caption-container {
+      position: absolute;
+      left: 70px;
+      right: 70px;
+      bottom: 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 25;
+    }
+    .caption-box {
+      position: absolute;
+      background: rgba(8, 11, 18, 0.94);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(217, 119, 6, 0.35);
+      padding: 12px 40px;
+      border-radius: 36px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+      text-align: center;
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="scene-03" data-start="0" data-duration="36.63" data-width="1920" data-height="1080">
+    <div class="bg-wrap">
+      <div class="bg-overlay"></div>
+      <div class="ambient-glow"></div>
+    </div>
+
+    <!-- Timeline Rail -->
+    <div class="timeline-rail">
+      <div class="timeline-steps">
+        <div class="timeline-node">01 时代前因</div><span class="timeline-arrow">➔</span><div class="timeline-node">02 幻梦破灭</div><span class="timeline-arrow">➔</span><div class="timeline-node active">03 因果绝症</div><span class="timeline-arrow">➔</span><div class="timeline-node">04 帮派分崩</div><span class="timeline-arrow">➔</span><div class="timeline-node">05 终极救赎</div><span class="timeline-arrow">➔</span><div class="timeline-node">06 尾声因果</div>
+      </div>
+      <div class="game-brand">RED DEAD REDEMPTION 2 / 西部史诗终曲</div>
+    </div>
+
+    <!-- Hero Title -->
+    <div class="title-area">
+      <div class="eyebrow-tag">TIMELINE 03 / DIAGNOSIS & REDEMPTION</div>
+      <h1 class="main-title">因果绝症 · 催债恶果与灵魂觉醒</h1>
+    </div>
+
+    <!-- Split Content -->
+    <div class="content-split">
+      <div class="logic-column">
+        
+              <div class="logic-box" id="lbox-1">
+                <div class="box-header">
+                  <span class="box-pill" style="background: rgba(239, 68, 68, 0.18); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">【因果业报】</span>
+                  <span class="box-title">向弱者施暴结下的致命恶果</span>
+                </div>
+                <div class="box-bullets">
+                  
+                  <div class="bullet-item">
+                    <span class="bullet-dot" style="background: #ef4444;"></span>
+                    <span>奉命对唐斯农夫拳脚相加逼债，沾染致命结核杆菌</span>
+                  </div>
+                
+                  <div class="bullet-item">
+                    <span class="bullet-dot" style="background: #ef4444;"></span>
+                    <span>过去几十年的土匪暴行，以最残酷的方式回击肉体</span>
+                  </div>
+                
+                </div>
+              </div>
+            
+              <div class="logic-box" id="lbox-2">
+                <div class="box-header">
+                  <span class="box-pill" style="background: rgba(217, 119, 6, 0.18); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.4);">【死亡判决】</span>
+                  <span class="box-title">圣丹尼斯诊所的绝望诊断</span>
+                </div>
+                <div class="box-bullets">
+                  
+                  <div class="bullet-item">
+                    <span class="bullet-dot" style="background: #d97706;"></span>
+                    <span>不可逆的进行性肺结核，咳血消瘦体力急剧衰竭</span>
+                  </div>
+                
+                  <div class="bullet-item">
+                    <span class="bullet-dot" style="background: #d97706;"></span>
+                    <span>死亡倒计时让亚瑟彻底看清了达奇的伪善与冷酷</span>
+                  </div>
+                
+                </div>
+              </div>
+            
+              <div class="logic-box" id="lbox-3">
+                <div class="box-header">
+                  <span class="box-pill" style="background: rgba(220, 38, 38, 0.18); color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.4);">【灵魂破茧】</span>
+                  <span class="box-title">将最后的生命献给救赎</span>
+                </div>
+                <div class="box-bullets">
+                  
+                  <div class="bullet-item">
+                    <span class="bullet-dot" style="background: #dc2626;"></span>
+                    <span>驱逐放高利贷的施特劳斯，暗中接济孤儿寡母</span>
+                  </div>
+                
+                  <div class="bullet-item">
+                    <span class="bullet-dot" style="background: #dc2626;"></span>
+                    <span>立誓豁出性命，也要保全约翰·马斯顿一家的未来！</span>
+                  </div>
+                
+                </div>
+              </div>
+            
+      </div>
+
+      <div class="art-column">
+        <div class="art-img-wrap">
+          <img src="assets/images/scene03_camp.jpg" class="art-img" data-layout-allow-overflow data-duration="36.63" alt="亚瑟的觉醒" />
+          <div class="art-gradient-overlay"></div>
+          <div class="art-info-overlay">
+            <span class="art-badge">因果业报</span>
+            <h2 class="art-name">亚瑟的觉醒</h2>
+            <p class="art-desc">绝症肺结核成为压垮肉体的毒药，却成了洗涤灵魂的甘霖。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subtitle Container -->
+    <div class="caption-container">
+      <div class="caption-box" id="caption-0" style="opacity: 0;">整个游戏最震撼人心的转折</div><div class="caption-box" id="caption-1" style="opacity: 0;">是一场残酷的因果报应</div><div class="caption-box" id="caption-2" style="opacity: 0;">亚瑟早年替施特劳斯向患病的农夫唐斯先生暴力催债</div><div class="caption-box" id="caption-3" style="opacity: 0;">被吐了一脸带血的唾沫</div><div class="caption-box" id="caption-4" style="opacity: 0;">到了圣丹尼斯街头</div><div class="caption-box" id="caption-5" style="opacity: 0;">亚瑟剧烈咳嗽昏倒在马路上</div><div class="caption-box" id="caption-6" style="opacity: 0;">医生冷酷地宣布了死刑：重度肺结核</div><div class="caption-box" id="caption-7" style="opacity: 0;">在没有抗生素的1899年</div><div class="caption-box" id="caption-8" style="opacity: 0;">这等于当场枪决</div><div class="caption-box" id="caption-9" style="opacity: 0;">但绝症反倒砸碎了亚瑟思想上的枷锁：既然自己必死无疑</div><div class="caption-box" id="caption-10" style="opacity: 0;">那就用剩下的最后一口气</div><div class="caption-box" id="caption-11" style="opacity: 0;">救出约翰一家</div><div class="caption-box" id="caption-12" style="opacity: 0;">做真正对的事情</div>
+    </div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+    window.__timelines['scene-03'] = tl;
+
+    // Entrance
+    tl.from('.title-area', { y: -30, opacity: 0, duration: 0.8, ease: 'power3.out' }, 0.1);
+    tl.from('.logic-box', { x: -40, opacity: 0, duration: 0.7, stagger: 0.15, ease: 'power2.out' }, 0.3);
+    tl.from('.art-column', { scale: 0.95, opacity: 0, duration: 0.9, ease: 'back.out(1.2)' }, 0.4);
+
+    // Subtitles sequence
+    const clauseDur = 2.66;
+    
+    tl.to('#caption-0', { opacity: 1, y: 0, duration: 0.3 }, 0.50);
+    tl.to('#caption-0', { opacity: 0, y: -10, duration: 0.25 }, 3.06);
+    
+
+    tl.to('#caption-1', { opacity: 1, y: 0, duration: 0.3 }, 3.16);
+    tl.to('#caption-1', { opacity: 0, y: -10, duration: 0.25 }, 5.73);
+    
+
+    tl.to('#caption-2', { opacity: 1, y: 0, duration: 0.3 }, 5.83);
+    tl.to('#caption-2', { opacity: 0, y: -10, duration: 0.25 }, 8.39);
+    
+
+    tl.to('#caption-3', { opacity: 1, y: 0, duration: 0.3 }, 8.49);
+    tl.to('#caption-3', { opacity: 0, y: -10, duration: 0.25 }, 11.06);
+    
+
+    tl.to('#caption-4', { opacity: 1, y: 0, duration: 0.3 }, 11.16);
+    tl.to('#caption-4', { opacity: 0, y: -10, duration: 0.25 }, 13.72);
+    
+
+    tl.to('#caption-5', { opacity: 1, y: 0, duration: 0.3 }, 13.82);
+    tl.to('#caption-5', { opacity: 0, y: -10, duration: 0.25 }, 16.38);
+    
+
+    tl.to('#caption-6', { opacity: 1, y: 0, duration: 0.3 }, 16.48);
+    tl.to('#caption-6', { opacity: 0, y: -10, duration: 0.25 }, 19.05);
+    
+
+    tl.to('#caption-7', { opacity: 1, y: 0, duration: 0.3 }, 19.15);
+    tl.to('#caption-7', { opacity: 0, y: -10, duration: 0.25 }, 21.71);
+    
+
+    tl.to('#caption-8', { opacity: 1, y: 0, duration: 0.3 }, 21.81);
+    tl.to('#caption-8', { opacity: 0, y: -10, duration: 0.25 }, 24.37);
+    
+
+    tl.to('#caption-9', { opacity: 1, y: 0, duration: 0.3 }, 24.47);
+    tl.to('#caption-9', { opacity: 0, y: -10, duration: 0.25 }, 27.04);
+    
+
+    tl.to('#caption-10', { opacity: 1, y: 0, duration: 0.3 }, 27.14);
+    tl.to('#caption-10', { opacity: 0, y: -10, duration: 0.25 }, 29.70);
+    
+
+    tl.to('#caption-11', { opacity: 1, y: 0, duration: 0.3 }, 29.80);
+    tl.to('#caption-11', { opacity: 0, y: -10, duration: 0.25 }, 32.37);
+    
+
+    tl.to('#caption-12', { opacity: 1, y: 0, duration: 0.3 }, 32.47);
+    tl.to('#caption-12', { opacity: 0, y: -10, duration: 0.25 }, 35.03);
+    
+
+    // Keep active until end
+    tl.to({}, { duration: 36.63 }, 0);
+  </script>
+</body>
+</html>
