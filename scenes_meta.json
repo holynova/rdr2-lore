@@ -4,7 +4,7 @@
   "scenes": [
     {
       "id": "scene-01",
-      "title": "时代前因 · 文明压境与黑水镇溃败",
+      "title": "时代前因——文明压境与黑水镇溃败",
       "eyebrow": "TIMELINE 01 / THE END OF THE WILD WEST",
       "image": "assets/images/scene01_arthur.jpg",
       "char_name": "亚瑟·摩根",
@@ -43,7 +43,7 @@
     },
     {
       "id": "scene-02",
-      "title": "幻梦破灭 · 达奇画饼与偏执失控",
+      "title": "幻梦破灭——达奇画饼与偏执失控",
       "eyebrow": "TIMELINE 02 / DUTCH'S PLAN & PARANOIA",
       "image": "assets/images/scene02_dutch.jpg",
       "char_name": "达奇·范德林德",
@@ -82,7 +82,7 @@
     },
     {
       "id": "scene-03",
-      "title": "因果绝症 · 催债恶果与灵魂觉醒",
+      "title": "因果绝症——催债恶果与灵魂觉醒",
       "eyebrow": "TIMELINE 03 / DIAGNOSIS & REDEMPTION",
       "image": "assets/images/scene03_camp.jpg",
       "char_name": "亚瑟的觉醒",
@@ -121,7 +121,7 @@
     },
     {
       "id": "scene-04",
-      "title": "帮派分崩 · 迈卡背叛与舍身护弟",
+      "title": "帮派分崩——迈卡背叛与舍身护弟",
       "eyebrow": "TIMELINE 04 / BETRAYAL & COLLAPSE",
       "image": "assets/images/scene04_micah.jpg",
       "char_name": "老鼠 迈卡·贝尔",
@@ -160,7 +160,7 @@
     },
     {
       "id": "scene-05",
-      "title": "终极救赎 · 孤峰绝战与落日鹿影",
+      "title": "终极救赎——孤峰绝战与落日鹿影",
       "eyebrow": "TIMELINE 05 / ARTHUR'S HIGH HONOR FINALE",
       "image": "assets/images/scene05_mountain.jpg",
       "char_name": "破晓中的亚瑟",
@@ -199,7 +199,7 @@
     },
     {
       "id": "scene-06",
-      "title": "尾声因果 · 比彻之愿与复仇代价",
+      "title": "尾声因果——比彻之愿与复仇代价",
       "eyebrow": "TIMELINE 06 / BEECHER'S HOPE & REVENGE",
       "image": "assets/images/scene06_ranch.jpg",
       "char_name": "约翰·马斯顿",
